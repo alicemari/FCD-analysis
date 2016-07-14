@@ -1,0 +1,174 @@
+%%load
+clear all
+load('prova1')
+fps=100;
+l=length(P_Tracks_Analysis);
+%see the boundaries:
+for i=1:l
+    figure(10)
+    plot(P_Tracks_Analysis(i).X,P_Tracks_Analysis(i).Y)
+ 
+  hold on
+end
+%% define the boudaries visualizing
+y_min_bound=0;
+y_max_bound=1000;
+
+%% remove particles that do not move  
+c=0;
+for i=1:l
+  V=sqrt(P_Tracks_Analysis(i).VelX.^2+P_Tracks_Analysis(i).VelY.^2)*fps;
+  
+    if V>10
+        c=c+1;
+        P_Tracks_Analysis2(c).X=P_Tracks_Analysis(i).X;
+        
+        P_Tracks_Analysis2(c).Y=P_Tracks_Analysis(i).Y;
+           P_Tracks_Analysis2(c).Frame=P_Tracks_Analysis(i).Frame;
+    end
+    
+end
+
+
+
+    %%        
+X=0;
+Y=0;
+ 
+    
+    r=[1,6000,12000,18000,24000];
+    
+    for i=1:length(r)
+    X=0;
+    Y=0;
+     low=r(i);
+        high=r(i+1);
+    for k=1:length(P_Tracks_Analysis2)
+       
+          clear a
+          clear b
+          
+          a=find(P_Tracks_Analysis2(k).Frame>low & P_Tracks_Analysis2(k).Frame<high);
+          
+%             a=P_Tracks_Analysis2(k).X(P_Tracks_Analysis2(k).Frame<high);
+%             b=P_Tracks_Analysis2(k).X(P_Tracks_Analysis2(k).Frame<low);
+%             X=[X;a(a~=b)];
+%              a=P_Tracks_Analysis2(k).Y(P_Tracks_Analysis2(k).Frame<high);
+%             b=P_Tracks_Analysis2(k).Y(P_Tracks_Analysis2(k).Frame<low);
+%              Y=[Y;a(a~=b)];
+X=[X;P_Tracks_Analysis2(k).X(a)];
+Y=[Y;P_Tracks_Analysis2(k).Y(a)];
+      
+    end
+
+  
+%      Y=Y(Y>y_min_bound);
+%         Y=Y(Y<y_max_bound);
+     
+       g=histogram(Y,20);
+       summary(:,i)=g.Values;
+%          figure(100)
+%         plot(10*g.Values./length(Y))
+         num_cell(i)=length(Y);
+%         pause
+%         close all
+    end
+      
+        
+        
+    %%
+    
+    for i=1:4
+      figure(100)
+      plot(10*summary(:,i)./num_cell(i))
+        
+        hold on
+        
+        
+    end
+        
+        
+        
+        
+        
+     %% first minute
+X=0;
+Y=0;
+    r=[1,6000,12000,18000,24000];
+for j=r(i):r(2)
+    
+    for k=1:length(P_Tracks_Analysis2)
+        
+        for i=1:length(P_Tracks_Analysis2(k).Frame)
+            
+        if P_Tracks_Analysis2(k).Frame(i)==j
+            
+            X=[X;P_Tracks_Analysis2(k).X(i)];
+            
+ Y=[Y;P_Tracks_Analysis2(k).Y(i)];
+        end
+        end
+    end   
+        
+end
+        
+        
+        
+        
+        
+        
+        
+        %%
+      for i=2:length(r)
+        
+        clear X
+        clear Y
+        clear g
+        X=particles_x(particles_x(:,r(i-1):r(i))>0);
+        Y=particles_y(particles_y(:,r(i-1):r(i))>0);
+%         
+        Y=Y(Y>y_min_bound);
+        Y=Y(Y<y_max_bound);
+         g=histogram(Y,20);
+         
+         summary(:,i-1)=g.Values./length(Y); % every 30s save a distribution
+         
+      end
+       %%  
+    Y=Y(Y>y_min_bound);
+        Y=Y(Y<y_max_bound);
+%%
+    g=histogram(Y,20)
+        figure(100)
+        plot(10*g.Values./length(Y))
+ 
+    %% remove the one out of boundaries and compute the distribution normalized to 1
+    r=[1,3000,6000,9000,12000,15000,18000,21000,24000];
+ 
+    for i=2:length(r)
+        
+        clear X
+        clear Y
+        clear g
+        X=particles_x(particles_x(:,r(i-1):r(i))>0);
+        Y=particles_y(particles_y(:,r(i-1):r(i))>0);
+%         
+        Y=Y(Y>y_min_bound);
+        Y=Y(Y<y_max_bound);
+         g=histogram(Y,20);
+         
+         summary(:,i-1)=g.Values./length(Y); % every 30s save a distribution
+         
+    end
+         
+         
+        
+  
+        %%
+        g=histogram(Y,20)
+        figure(100)
+        plot(10*g.Values./length(Y))
+    
+        
+        
+    
