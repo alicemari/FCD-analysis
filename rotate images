@@ -1,0 +1,10 @@
+
+for i=1:3
+    h=strcat('prova1t',num2str(i,'%.5d'),'.tif');
+A=imread(h);
+
+B=imrotate(A,10);
+hh=strcat('prova4_fcdt_r',num2str(i,'%.f'),'.tif');
+imwrite(B,fullfile(cd, hh));
+
+end
